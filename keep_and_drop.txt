@@ -3,6 +3,7 @@ drop *
 keep run
 keep luminosityBlock
 keep event
+keep genWeight_genWeight
 keep MET_pt
 keep MET_phi
 keep RawMET_pt
@@ -26,6 +27,7 @@ keep Muon_pdgId
 keep Muon_charge
 keep Muon_pfRelIso04_all
 keep Muon_tightId
+keep Muon_isPFcand
 keep Jet_pt
 keep Jet_eta
 keep Jet_phi
