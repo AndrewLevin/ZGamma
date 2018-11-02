@@ -15,11 +15,12 @@ class exampleProducer(Module):
         pass
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
-        self.out.branch("photon_sieie",  "F");
-        self.out.branch("photon_pt",  "F");
-        self.out.branch("photon_eta",  "F");
-        self.out.branch("gen_weight",  "F");
-        self.out.branch("lepton_pdg_id",  "I");
+        self.out.branch("photon_sieie",  "F")
+        self.out.branch("photon_pt",  "F")
+        self.out.branch("photon_eta",  "F")
+        self.out.branch("gen_weight",  "F")
+        self.out.branch("lepton_pdg_id",  "I")
+        self.out.branch("photon_gen_matching",  "I")
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
     def analyze(self, event):
@@ -28,6 +29,11 @@ class exampleProducer(Module):
         muons = Collection(event, "Muon")
         jets = Collection(event, "Jet")
         photons = Collection(event, "Photon")
+
+        try:
+            genparts = Collection(event, "GenPart")
+        except:
+            pass
 
         tight_muons = []
 
@@ -270,6 +276,35 @@ class exampleProducer(Module):
             self.out.fillBranch("gen_weight",event.Generator_weight)
         except:
             pass
+
+        photon_gen_matching=0
+
+        isprompt_mask = (1 << 0) #isPrompt                                                                                                                                                
+        isprompttaudecayproduct_mask = (1 << 4) #isPromptTauDecayProduct
+
+        try:
+
+            for i in range(0,len(genparts)):
+                if genparts[i].pt > 5 and genparts[i].status == 1 and abs(genparts[i].pdgId) == 13 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isprompttaudecayproduct_mask == isprompttaudecayproduct_mask)) and deltaR(photons[selected_photons[0]].eta,photons[selected_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    photon_gen_matching += 1 #m -> g
+                    break
+
+            for i in range(0,len(genparts)):
+                if genparts[i].pt > 5 and genparts[i].status == 1 and abs(genparts[i].pdgId) == 11 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isprompttaudecayproduct_mask == isprompttaudecayproduct_mask)) and deltaR(photons[selected_photons[0]].eta,photons[selected_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    photon_gen_matching += 2 #e -> g
+                    break
+
+            for i in range(0,len(genparts)):
+                if genparts[i].pt > 5 and genparts[i].status == 1 and genparts[i].pdgId == 22 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isprompttaudecayproduct_mask == isprompttaudecayproduct_mask)) and deltaR(photons[selected_photons[0]].eta,photons[selected_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    if genparts[i].genPartIdxMother >= 0 and (abs(genparts[genparts[i].genPartIdxMother].pdgId) == 11 or abs(genparts[genparts[i].genPartIdxMother].pdgId) == 13 or abs(genparts[genparts[i].genPartIdxMother].pdgId) == 15):
+                        photon_gen_matching += 8 #fsr photon
+                    else:    
+                        photon_gen_matching += 4 #non-fsr photon
+                    break
+        except:
+            pass
+
+        self.out.fillBranch("photon_gen_matching",photon_gen_matching)        
 
         return True
 
