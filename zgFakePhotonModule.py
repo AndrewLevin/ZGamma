@@ -175,6 +175,8 @@ class exampleProducer(Module):
                 
             if ((muons[i1].p4() + muons[i2].p4()).M() > 110) or ((muons[i1].p4() + muons[i2].p4()).M() < 70) :
                 return False
+
+            self.out.fillBranch("lepton_pdg_id",13)
                 
 #            print "selected meng lu muon event: " + str(event.event) + " " + str(event.luminosityBlock) + " " + str(event.run)
 
@@ -203,6 +205,8 @@ class exampleProducer(Module):
                 
             if ((electrons[i1].p4() + electrons[i2].p4()).M() > 110) or ((electrons[i1].p4() + electrons[i2].p4()).M() < 70) :
                 return False
+
+            self.out.fillBranch("lepton_pdg_id",11)
                 
         if len(loose_but_not_tight_muons) + len(loose_but_not_tight_electrons) + len(tight_electrons) + len(tight_muons) > 2:
             return False
