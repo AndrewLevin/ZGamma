@@ -73,10 +73,10 @@ class exampleProducer(Module):
 
         if len(electrons) == 2:
 
-            if lheparts[electrons[0]].pt < 25 or abs(lheparts[electrons[0]].eta) < 2.5:
+            if lheparts[electrons[0]].pt < 25 or abs(lheparts[electrons[0]].eta) > 2.5:
                 return False
 
-            if lheparts[electrons[1]].pt < 25 or abs(lheparts[electrons[1]].eta) < 2.5:
+            if lheparts[electrons[1]].pt < 25 or abs(lheparts[electrons[1]].eta) > 2.5:
                 return False
 
             if (lheparts[electrons[0]].p4() + lheparts[electrons[1]].p4()).M() < 70 or (lheparts[electrons[0]].p4() + lheparts[electrons[1]].p4()).M() > 110:
@@ -102,10 +102,10 @@ class exampleProducer(Module):
 
         elif len(muons) == 2:
 
-            if lheparts[muons[0]].pt < 20 or abs(lheparts[muons[0]].eta) < 2.4:
+            if lheparts[muons[0]].pt < 20 or abs(lheparts[muons[0]].eta) > 2.4:
                 return False
 
-            if lheparts[muons[1]].pt < 20 or abs(lheparts[muons[1]].eta) < 2.4:
+            if lheparts[muons[1]].pt < 20 or abs(lheparts[muons[1]].eta) > 2.4:
                 return False
 
             if (lheparts[muons[0]].p4() + lheparts[muons[1]].p4()).M() < 70 or (lheparts[muons[0]].p4() + lheparts[muons[1]].p4()).M() > 110:
@@ -131,8 +131,6 @@ class exampleProducer(Module):
         else:
             return False
 
-        self.nselectedevents += 1
-
         if lheparts[photons[0]].pt < 25:
             return False
 
@@ -147,6 +145,8 @@ class exampleProducer(Module):
 
         if deltaR(lheparts[jets[1]].eta,lheparts[jets[1]].phi,lheparts[photons[0]].eta,lheparts[photons[0]].phi) < 0.5:
             return False
+
+        self.nselectedevents += 1
 
         return True
 
