@@ -6,6 +6,8 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 
 from PhysicsTools.NanoAODTools.postprocessing.tools import deltaR
 
+from PhysicsTools.NanoAODTools.postprocessing.tools import deltaPhi
+
 class exampleProducer(Module):
     def __init__(self):
         pass
@@ -330,9 +332,21 @@ class exampleProducer(Module):
 
             self.out.fillBranch("mzg",(muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).M())
 
-            self.out.fillBranch("mengsvariable",abs((muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Phi() - (jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi()/2))
+            self.out.fillBranch("mengsvariable",abs(deltaPhi((muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Phi(),(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi())))
 
             self.out.fillBranch("lepton_pdg_id",13)
+
+            print (muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Eta()
+            print (jets[tight_jets[0]].eta + jets[tight_jets[1]].eta)/2
+
+            print (muons[i1].p4() + muons[i2].p4()).Pt()
+            print (muons[i1].p4() + muons[i2].p4()).Eta()
+            print (muons[i1].p4() + muons[i2].p4()).Phi()
+            print (muons[i1].p4() + muons[i2].p4()).M()
+            print photons[tight_photons[0]].pt
+            print photons[tight_photons[0]].eta
+            print photons[tight_photons[0]].phi
+            print photons[tight_photons[0]].mass
 
         elif len(tight_electrons) == 2:
 
@@ -373,7 +387,7 @@ class exampleProducer(Module):
 
             self.out.fillBranch("mzg",(electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).M())
 
-            self.out.fillBranch("mengsvariable",abs((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Phi() - (jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi()/2))
+            self.out.fillBranch("mengsvariable",abs(deltaPhi((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Phi(),(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi())))
 
         else:
             return False
