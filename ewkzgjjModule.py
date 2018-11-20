@@ -336,18 +336,6 @@ class exampleProducer(Module):
 
             self.out.fillBranch("lepton_pdg_id",13)
 
-            print (muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Eta()
-            print (jets[tight_jets[0]].eta + jets[tight_jets[1]].eta)/2
-
-            print (muons[i1].p4() + muons[i2].p4()).Pt()
-            print (muons[i1].p4() + muons[i2].p4()).Eta()
-            print (muons[i1].p4() + muons[i2].p4()).Phi()
-            print (muons[i1].p4() + muons[i2].p4()).M()
-            print photons[tight_photons[0]].pt
-            print photons[tight_photons[0]].eta
-            print photons[tight_photons[0]].phi
-            print photons[tight_photons[0]].mass
-
         elif len(tight_electrons) == 2:
 
             i1 = tight_electrons[0]
