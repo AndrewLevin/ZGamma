@@ -15,6 +15,7 @@ class exampleProducer(Module):
         pass
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
+        self.out.branch("lepton_pdg_id",  "i");
         self.out.branch("run",  "i");
         self.out.branch("lumi",  "i");
         self.out.branch("event",  "l");
@@ -22,6 +23,9 @@ class exampleProducer(Module):
         self.out.branch("photon_eta",  "F");
         self.out.branch("mjj",  "F");
         self.out.branch("detajj",  "F");
+        self.out.branch("zep",  "F");
+        self.out.branch("mzg",  "F");
+        self.out.branch("mengsvariable",  "F");
         #self.out.branch("EventMass",  "F");
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -238,7 +242,6 @@ class exampleProducer(Module):
                 
 #            print "selected meng lu electron event: " + str(event.event) + " " + str(event.luminosityBlock) + " " + str(event.run)
 
-
         if len(tight_jets) < 2:
             return False
 
@@ -289,7 +292,7 @@ class exampleProducer(Module):
 
             if not event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ and not event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ:
                 return False
-            
+
             if muons[i1].pt < 20:
                 return False
 
@@ -320,7 +323,13 @@ class exampleProducer(Module):
             if ((muons[i1].p4() + muons[i2].p4()).M() > 110) or ((muons[i1].p4() + muons[i2].p4()).M() < 70) :
                 return False
 
-            return False
+            self.out.fillBranch("zep",abs((muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Eta() - (jets[tight_jets[0]].eta + jets[tight_jets[1]].eta)/2))
+
+            self.out.fillBranch("mzg",(muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).M())
+
+            self.out.fillBranch("mengsvariable",abs((muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Phi() - (jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi()/2))
+
+            self.out.fillBranch("lepton_pdg_id",13)
 
         elif len(tight_electrons) == 2:
 
@@ -355,12 +364,24 @@ class exampleProducer(Module):
             if ((electrons[i1].p4() + electrons[i2].p4()).M() > 110) or ((electrons[i1].p4() + electrons[i2].p4()).M() < 70) :
                 return False
 
+            self.out.fillBranch("lepton_pdg_id",11)
+
+            self.out.fillBranch("zep",abs((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Eta() - (jets[tight_jets[0]].eta + jets[tight_jets[1]].eta)/2))
+
+            self.out.fillBranch("mzg",(electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).M())
+
+            self.out.fillBranch("mengsvariable",abs((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Phi() - (jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi()/2))
+
         else:
             return False
 
         print "selected event: " + str(event.event) + " " + str(event.luminosityBlock) + " " + str(event.run)
 
+
+        self.out.fillBranch("photon_pt",photons[tight_photons[0]].pt)
+        self.out.fillBranch("photon_eta",photons[tight_photons[0]].eta)
         self.out.fillBranch("mjj",(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).M())
+
         self.out.fillBranch("detajj",abs(jets[tight_jets[0]].eta - jets[tight_jets[1]].eta))
         self.out.fillBranch("event",event.event)
         self.out.fillBranch("lumi",event.luminosityBlock)
