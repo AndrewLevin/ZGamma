@@ -197,10 +197,10 @@ class exampleProducer(Module):
             if not event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ and not event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ:
                 return False
                 
-            if muons[i1].pt < 25:
+            if muons[i1].pt < 20:
                 return False
 
-            if muons[i2].pt < 25:
+            if muons[i2].pt < 20:
                 return False
 
             if abs(muons[i1].eta) > 2.4:
@@ -283,6 +283,8 @@ class exampleProducer(Module):
 
         if len(loose_but_not_tight_muons) + len(loose_but_not_tight_electrons) + len(tight_electrons) + len(tight_muons) > 2:
             return False
+
+
 
         if len(tight_muons) == 2:
 
