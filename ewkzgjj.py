@@ -17,6 +17,23 @@ n_weighted_events_run_over = f.Get("nWeightedEvents").GetBinContent(1)
 
 for i in range(0,t.GetEntries()):
 
+    t.GetEntry(i)
+
+    if t.mengsvariable < 1.9:
+        continue
+
+    if t.mjj < 500:
+        continue
+
+    if t.mzg < 100:
+        continue
+
+    if t.photon_pt < 25:
+        continue
+
+    if t.zep > 2.3:
+        continue
+
     detajj = t.detajj
     mjj = t.mjj
 
@@ -28,6 +45,7 @@ for i in range(0,t.GetEntries()):
 
     w = xs * 1000 * 35.9 / n_weighted_events_run_over     
 
+#    h.Fill(detajj,mjj,w)
     h.Fill(detajj,mjj)
 
 h.Print("all")
