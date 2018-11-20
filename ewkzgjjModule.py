@@ -15,6 +15,13 @@ class exampleProducer(Module):
         pass
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
+        self.out.branch("run",  "i");
+        self.out.branch("lumi",  "i");
+        self.out.branch("event",  "l");
+        self.out.branch("photon_pt",  "F");
+        self.out.branch("photon_eta",  "F");
+        self.out.branch("mjj",  "F");
+        self.out.branch("detajj",  "F");
         #self.out.branch("EventMass",  "F");
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
@@ -351,8 +358,13 @@ class exampleProducer(Module):
         else:
             return False
 
-
         print "selected event: " + str(event.event) + " " + str(event.luminosityBlock) + " " + str(event.run)
+
+        self.out.fillBranch("mjj",(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).M())
+        self.out.fillBranch("detajj",abs(jets[tight_jets[0]].eta - jets[tight_jets[1]].eta))
+        self.out.fillBranch("event",event.event)
+        self.out.fillBranch("lumi",event.luminosityBlock)
+        self.out.fillBranch("run",event.run)        
 
         #print event.event
 
