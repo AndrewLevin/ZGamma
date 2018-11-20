@@ -177,6 +177,7 @@ class exampleProducer(Module):
             tight_jets.append(i)
 
         if (len(tight_muons) == 2) and (len(loose_but_not_tight_electrons)+ len(tight_electrons)+len(loose_but_not_tight_muons) == 0):
+
             if len(tight_muons) == 2:
                 i1 = tight_muons[0]
 
@@ -269,11 +270,11 @@ class exampleProducer(Module):
         if photons[tight_photons[0]].pt/photons[tight_photons[0]].eCorr < 25:
             return False
 
-        #if not ((abs(photons[tight_photons[0]].eta) < 1.4442) or (1.566 < abs(photons[tight_photons[0]].eta) and abs(photons[tight_photons[0]].eta) < 2.5) ):
-        #    return False        
-
-        if not abs(photons[tight_photons[0]].eta) < 1.4442:
+        if not ((abs(photons[tight_photons[0]].eta) < 1.4442) or (1.566 < abs(photons[tight_photons[0]].eta) and abs(photons[tight_photons[0]].eta) < 2.5) ):
             return False        
+
+        #if not abs(photons[tight_photons[0]].eta) < 1.4442:
+        #    return False        
 
         if photons[tight_photons[0]].cutBased == 0 or photons[tight_photons[0]].cutBased == 1:
             return False
@@ -281,9 +282,9 @@ class exampleProducer(Module):
         if not photons[tight_photons[0]].electronVeto:
             return False
 
+
         if len(loose_but_not_tight_muons) + len(loose_but_not_tight_electrons) + len(tight_electrons) + len(tight_muons) > 2:
             return False
-
 
 
         if len(tight_muons) == 2:
