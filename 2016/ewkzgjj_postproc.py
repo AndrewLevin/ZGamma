@@ -16,7 +16,7 @@ from  countHistogramsModule import *
 
 #p=PostProcessor(".",["root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/LLAJJ_EWK_MLL-50_MJJ-120_13TeV-madgraph-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/80000/DAF92081-7F11-E811-B3F3-0025905C543A.root"],"nJet >= 2 && Jet_pt[0] >= 30 && Jet_pt[1] >= 30 && nPhoton >= 1 && Photon_pt[0] > 25 && nElectron >= 2","keep_and_drop.txt",[exampleModule()],provenance=True,justcount=False,noOut=False)
 
-p=PostProcessor(".",["root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/LLAJJ_EWK_MLL-50_MJJ-120_13TeV-madgraph-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/80000/DAF92081-7F11-E811-B3F3-0025905C543A.root"],"","keep_and_drop.txt",[countHistogramsModule(),exampleModule()],provenance=True,justcount=False,noOut=False,outputbranchsel = "output_branch_selection.txt")
+p=PostProcessor(".",["root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/LLAJJ_EWK_MLL-50_MJJ-120_13TeV-madgraph-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/80000/DAF92081-7F11-E811-B3F3-0025905C543A.root"],None,"keep_and_drop.txt",[countHistogramsModule(),exampleModule()],provenance=True,justcount=False,noOut=False,outputbranchsel = "output_branch_selection.txt")
 
 #p=PostProcessor(".",["root://cms-xrd-global.cern.ch//store/mc/RunIISummer16NanoAOD/LLAJJ_EWK_MLL-50_MJJ-120_13TeV-madgraph-pythia8/NANOAODSIM/PUMoriond17_05Feb2018_94X_mcRun2_asymptotic_v2-v1/80000/DAF92081-7F11-E811-B3F3-0025905C543A.root"],"nJet >= 2 && Jet_pt[0] >= 30 && Jet_pt[1] >= 30 && nPhoton >= 1 && Photon_pt[0] > 25 && nElectron >= 2 && event == 4784","keep_and_drop.txt",[exampleModule()],provenance=True,justcount=False,noOut=False)
 

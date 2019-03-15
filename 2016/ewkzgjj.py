@@ -45,6 +45,8 @@ for i in range(0,t.GetEntries()):
 
     w = xs * 1000 * 35.9 / n_weighted_events_run_over     
 
+#    print str(t.event) + " " + str(t.zep) + " " + str(t.mengsvariable) + " " + str(t.photon_pt) + " " + str(t.mjj)
+
 #    h.Fill(detajj,mjj,w)
     h.Fill(detajj,mjj)
 

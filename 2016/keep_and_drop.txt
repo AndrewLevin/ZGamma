@@ -3,7 +3,7 @@ drop *
 keep run
 keep luminosityBlock
 keep event
-keep genWeight_genWeight
+keep Generator_weight
 keep MET_pt
 keep MET_phi
 keep RawMET_pt
