@@ -15,6 +15,9 @@ class exampleProducer(Module):
         pass
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
+        self.out.branch("run",  "i")
+        self.out.branch("lumi",  "i")
+        self.out.branch("event",  "l")
         self.out.branch("photon_sieie",  "F")
         self.out.branch("photon_pt",  "F")
         self.out.branch("photon_eta",  "F")
@@ -304,6 +307,9 @@ class exampleProducer(Module):
         except:
             pass
 
+        self.out.fillBranch("event",event.event)
+        self.out.fillBranch("lumi",event.luminosityBlock)
+        self.out.fillBranch("run",event.run)
         self.out.fillBranch("photon_gen_matching",photon_gen_matching)        
 
         return True
