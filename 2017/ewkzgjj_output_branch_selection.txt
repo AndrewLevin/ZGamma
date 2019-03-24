@@ -1,0 +1,4 @@
+drop *
+keep L1PreFiringWeight
+keep L1PreFiringWeightUp
+keep L1PreFiringWeightDn

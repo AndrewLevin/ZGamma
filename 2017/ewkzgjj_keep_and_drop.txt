@@ -40,6 +40,8 @@ keep Photon_eta
 keep Photon_phi
 keep Photon_mass
 keep Photon_cutBasedBitmap
+keep Photon_vidNestedWPBitmap
+keep Photon_pixelSeed
 keep Photon_electronVeto
 keep Photon_eCorr
 keep HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL
