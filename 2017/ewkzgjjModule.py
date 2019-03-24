@@ -329,8 +329,8 @@ class ewkzgjjProducer(Module):
         #if not abs(photons[tight_photons[0]].eta) < 1.4442:
         #    return False        
 
-        if not (photons[tight_photons[0]].cutBasedBitmap & (1 << 1) == (1 << 1)):
-            return False
+#        if not (photons[tight_photons[0]].cutBasedBitmap & (1 << 1) == (1 << 1)):
+#            return False
 
 #        if photons[tight_photons[0]].pixelSeed:
         if not photons[tight_photons[0]].electronVeto:
