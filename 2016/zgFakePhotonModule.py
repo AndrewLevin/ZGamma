@@ -73,7 +73,7 @@ class exampleProducer(Module):
 
         for i in range (0,len(electrons)):
 
-            if electrons[i].pt/electrons[i].eCorr < 20:
+            if electrons[i].pt < 20:
                 continue
 
             if abs(electrons[i].eta) > 2.5:
@@ -87,7 +87,7 @@ class exampleProducer(Module):
 
         for i in range (0,len(photons)):
 
-            if photons[i].pt/photons[i].eCorr < 20:
+            if photons[i].pt < 20:
                 continue
 
             if not ((abs(photons[i].eta) < 1.4442) or (1.566 < abs(photons[i].eta) and abs(photons[i].eta) < 2.5) ):
@@ -108,11 +108,11 @@ class exampleProducer(Module):
             #if abs(photons[i].eta) < 1.4442:
             #    print photons[i].pfRelIso03_chg*photons[i].pt/photons[i].eCorr
 
-#            if not photons[i].electronVeto:
-#                continue
-
-            if photons[i].pixelSeed:
+            if not photons[i].electronVeto:
                 continue
+
+#            if photons[i].pixelSeed:
+#                continue
 
             #if photons[i].pfRelIso03_chg > 10 or not (photons[i].pfRelIso03_chg > 4 or photons[i].sieie > 0.01031):
             #if photons[i].pfRelIso03_chg*photons[i].pt > 10 or photons[i].pfRelIso03_chg*photons[i].pt < 4:
@@ -160,7 +160,7 @@ class exampleProducer(Module):
 
         for i in range (0,len(photons)):
 
-            if photons[i].pt/photons[i].eCorr < 20:
+            if photons[i].pt < 20:
                 continue
 
             if not ((abs(photons[i].eta) < 1.4442) or (1.566 < abs(photons[i].eta) and abs(photons[i].eta) < 2.5) ):
@@ -172,7 +172,10 @@ class exampleProducer(Module):
             if not (mask & photons[i].vidNestedWPBitmap == mask):
                 continue
 
-            if photons[i].pixelSeed:
+#            if photons[i].pixelSeed:
+#                continue
+
+            if not photons[i].electronVeto:
                 continue
 
             if photons[i].pfRelIso03_chg*photons[i].pt > 10 or photons[i].pfRelIso03_chg*photons[i].pt < 4:
@@ -330,10 +333,10 @@ class exampleProducer(Module):
             if electrons[i2].cutBased < 3:
                 return False
 
-            if electrons[i1].pt/electrons[i1].eCorr < 25:
+            if electrons[i1].pt < 25:
                 return False
 
-            if electrons[i2].pt/electrons[i2].eCorr < 25:
+            if electrons[i2].pt < 25:
                 return False
 
             if abs(electrons[i1].eta) > 2.5:
