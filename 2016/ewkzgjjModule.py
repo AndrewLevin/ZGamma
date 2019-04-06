@@ -8,7 +8,7 @@ from PhysicsTools.NanoAODTools.postprocessing.tools import deltaR
 
 from PhysicsTools.NanoAODTools.postprocessing.tools import deltaPhi
 
-class exampleProducer(Module):
+class ewkzgjjProducer(Module):
     def __init__(self):
         pass
     def beginJob(self):
@@ -20,6 +20,7 @@ class exampleProducer(Module):
         self.out.branch("lepton_pdg_id",  "i");
         self.out.branch("run",  "i");
         self.out.branch("lumi",  "i");
+        self.out.branch("gen_weight",  "F");
         self.out.branch("event",  "l");
         self.out.branch("photon_pt",  "F");
         self.out.branch("photon_eta",  "F");
@@ -27,8 +28,9 @@ class exampleProducer(Module):
         self.out.branch("detajj",  "F");
         self.out.branch("zep",  "F");
         self.out.branch("mzg",  "F");
-        self.out.branch("mengsvariable",  "F");
-        #self.out.branch("EventMass",  "F");
+        self.out.branch("mll",  "F");
+        self.out.branch("photon_selection",  "I");
+        self.out.branch("photon_gen_matching",  "I");
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -38,6 +40,9 @@ class exampleProducer(Module):
         muons = Collection(event, "Muon")
         jets = Collection(event, "Jet")
         photons = Collection(event, "Photon")
+
+        if hasattr(event,'nGenPart'):
+            genparts = Collection(event, "GenPart")
 
         tight_muons = []
 
@@ -66,7 +71,7 @@ class exampleProducer(Module):
 
         for i in range (0,len(electrons)):
 
-            if electrons[i].pt/electrons[i].eCorr < 20:
+            if electrons[i].pt < 20:
                 continue
 
             if abs(electrons[i].eta) > 2.5:
@@ -80,7 +85,7 @@ class exampleProducer(Module):
 
         for i in range (0,len(photons)):
             
-            if photons[i].pt/photons[i].eCorr < 25:
+            if photons[i].pt < 25:
                 continue
 
             if not ((abs(photons[i].eta) < 1.4442) or (1.566 < abs(photons[i].eta) and abs(photons[i].eta) < 2.5) ):
@@ -96,28 +101,79 @@ class exampleProducer(Module):
 
             for j in range(0,len(tight_muons)):
 
-                #print "deltaR(muons[tight_muons[j]].eta,muons[tight_muons[j]].phi,photons[i].eta,photons[i].phi) = "+str(deltaR(muons[tight_muons[j]].eta,muons[tight_muons[j]].phi,photons[i].eta,photons[i].phi))
 
                 if deltaR(muons[tight_muons[j]].eta,muons[tight_muons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
                     pass_lepton_dr_cut = False
 
             for j in range(0,len(tight_electrons)):
                 
-                #print "deltaR(electrons[tight_electrons[j]].eta,electrons[tight_electrons[j]].phi,photons[i].eta,photons[i].phi) = "+str(deltaR(electrons[tight_electrons[j]].eta,electrons[tight_electrons[j]].phi,photons[i].eta,photons[i].phi))
 
                 if deltaR(electrons[tight_electrons[j]].eta,electrons[tight_electrons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
                     pass_lepton_dr_cut = False
 
             for j in range(0,len(loose_but_not_tight_muons)):
 
-                #print "deltaR(muons[loose_but_not_tight_muons[j]].eta,muons[loose_but_not_tight_muons[j]].phi,photons[i].eta,photons[i].phi) = "+str(deltaR(muons[loose_but_not_tight_muons[j]].eta,muons[loose_but_not_tight_muons[j]].phi,photons[i].eta,photons[i].phi))
 
                 if deltaR(muons[loose_but_not_tight_muons[j]].eta,muons[loose_but_not_tight_muons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
                     pass_lepton_dr_cut = False
 
             for j in range(0,len(loose_but_not_tight_electrons)):
 
-                #print "deltaR(electrons[loose_but_not_tight_electrons[j]].eta,electrons[loose_but_not_tight_electrons[j]].phi,photons[i].eta,photons[i].phi) = "+str(deltaR(electrons[loose_but_not_tight_electrons[j]].eta,electrons[loose_but_not_tight_electrons[j]].phi,photons[i].eta,photons[i].phi))
+                if deltaR(electrons[loose_but_not_tight_electrons[j]].eta,electrons[loose_but_not_tight_electrons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
+                    pass_lepton_dr_cut = False
+
+            if not pass_lepton_dr_cut:
+                continue
+
+            tight_photons.append(i)
+
+        for i in range (0,len(photons)):
+            
+            if photons[i].pt < 25:
+                continue
+
+            if not ((abs(photons[i].eta) < 1.4442) or (1.566 < abs(photons[i].eta) and abs(photons[i].eta) < 2.5) ):
+                continue        
+
+            mask1 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) | (1 << 11) | (1 << 13)
+            mask2 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) | (1 << 11) 
+            mask3 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) |  (1 << 13)
+            mask4 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 11) | (1 << 13)
+            mask5 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 9) | (1 << 11) | (1 << 13) #invert the medium photon ID with the sigma_ietaieta cut removed
+
+            bitmap = photons[i].vidNestedWPBitmap & mask1
+
+            #after adding the photons that pass the full ID, add the photons that pass the inverted ID
+            if (bitmap == mask1):
+                continue
+
+            if not((bitmap == mask1) or (bitmap == mask2) or (bitmap == mask3) or (bitmap == mask4) or (bitmap == mask5)):
+                continue
+
+            if not photons[i].electronVeto:
+                continue
+
+            pass_lepton_dr_cut = True
+
+            for j in range(0,len(tight_muons)):
+
+
+                if deltaR(muons[tight_muons[j]].eta,muons[tight_muons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
+                    pass_lepton_dr_cut = False
+
+            for j in range(0,len(tight_electrons)):
+                
+
+                if deltaR(electrons[tight_electrons[j]].eta,electrons[tight_electrons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
+                    pass_lepton_dr_cut = False
+
+            for j in range(0,len(loose_but_not_tight_muons)):
+
+
+                if deltaR(muons[loose_but_not_tight_muons[j]].eta,muons[loose_but_not_tight_muons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
+                    pass_lepton_dr_cut = False
+
+            for j in range(0,len(loose_but_not_tight_electrons)):
 
                 if deltaR(electrons[loose_but_not_tight_electrons[j]].eta,electrons[loose_but_not_tight_electrons[j]].phi,photons[i].eta,photons[i].phi) < 0.7:
                     pass_lepton_dr_cut = False
@@ -269,7 +325,7 @@ class exampleProducer(Module):
         #if abs(jets[0].p4().Eta() - jets[1].p4().Eta()) < 2.5:
         #    return False
 
-        if photons[tight_photons[0]].pt/photons[tight_photons[0]].eCorr < 25:
+        if photons[tight_photons[0]].pt < 25:
             return False
 
         if not ((abs(photons[tight_photons[0]].eta) < 1.4442) or (1.566 < abs(photons[tight_photons[0]].eta) and abs(photons[tight_photons[0]].eta) < 2.5) ):
@@ -277,9 +333,6 @@ class exampleProducer(Module):
 
         #if not abs(photons[tight_photons[0]].eta) < 1.4442:
         #    return False        
-
-        if photons[tight_photons[0]].cutBased == 0 or photons[tight_photons[0]].cutBased == 1:
-            return False
 
         if not photons[tight_photons[0]].electronVeto:
             return False
@@ -332,7 +385,7 @@ class exampleProducer(Module):
 
             self.out.fillBranch("mzg",(muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).M())
 
-            self.out.fillBranch("mengsvariable",abs(deltaPhi((muons[i1].p4() + muons[i2].p4() + photons[tight_photons[0]].p4()).Phi(),(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi())))
+            self.out.fillBranch("mll",(muons[i1].p4() + muons[i2].p4()).M())
 
             self.out.fillBranch("lepton_pdg_id",13)
 
@@ -351,10 +404,10 @@ class exampleProducer(Module):
             if electrons[i2].cutBased < 3:
                 return False
 
-            if electrons[i1].pt/electrons[i1].eCorr < 25:
+            if electrons[i1].pt < 25:
                 return False
 
-            if electrons[i2].pt/electrons[i2].eCorr < 25:
+            if electrons[i2].pt < 25:
                 return False
 
             if abs(electrons[i1].eta) > 2.5:
@@ -375,7 +428,7 @@ class exampleProducer(Module):
 
             self.out.fillBranch("mzg",(electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).M())
 
-            self.out.fillBranch("mengsvariable",abs(deltaPhi((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Phi(),(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).Phi())))
+            self.out.fillBranch("mll",(electrons[i1].p4() + electrons[i2].p4()).M())
 
         else:
             return False
@@ -383,6 +436,45 @@ class exampleProducer(Module):
         print "selected event: " + str(event.event) + " " + str(event.luminosityBlock) + " " + str(event.run)
 
 
+        mask1 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) | (1 << 11) | (1 << 13)
+        mask2 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) | (1 << 11) 
+        mask3 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 9) |  (1 << 13)
+        mask4 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 7) | (1 << 11) | (1 << 13)
+        mask5 = (1 << 1) | (1 << 3) | (1 << 5) | (1 << 9) | (1 << 11) | (1 << 13) #invert the medium photon ID with the sigma_ietaieta cut removed
+
+        bitmap = photons[tight_photons[0]].vidNestedWPBitmap & mask1
+
+        if (bitmap == mask1):
+            self.out.fillBranch("photon_selection",2)
+        elif (bitmap == mask5):
+            self.out.fillBranch("photon_selection",1)
+        elif (bitmap == mask2) or (bitmap == mask3) or (bitmap == mask4):
+            self.out.fillBranch("photon_selection",0)
+        else:
+            print bitmap
+            assert(0)
+
+        isprompt_mask = (1 << 0) #isPrompt
+        isdirectprompttaudecayproduct_mask = (1 << 5) #isDirectPromptTauDecayProduct
+
+        photon_gen_matching=0
+
+        if hasattr(event,'nGenPart'):
+
+            for i in range(0,len(genparts)):
+                if genparts[i].pt > 5 and genparts[i].status == 1 and abs(genparts[i].pdgId) == 13 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isdirectprompttaudecayproduct_mask == isdirectprompttaudecayproduct_mask)) and deltaR(photons[tight_photons[0]].eta,photons[tight_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    photon_gen_matching += 1 #m -> g
+
+                if genparts[i].pt > 5 and genparts[i].status == 1 and abs(genparts[i].pdgId) == 11 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isdirectprompttaudecayproduct_mask == isdirectprompttaudecayproduct_mask)) and deltaR(photons[tight_photons[0]].eta,photons[tight_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    photon_gen_matching += 2 #e -> g
+
+                if genparts[i].pt > 5 and genparts[i].status == 1 and genparts[i].pdgId == 22 and ((genparts[i].statusFlags & isprompt_mask == isprompt_mask) or (genparts[i].statusFlags & isdirectprompttaudecayproduct_mask == isdirectprompttaudecayproduct_mask)) and deltaR(photons[tight_photons[0]].eta,photons[tight_photons[0]].phi,genparts[i].eta,genparts[i].phi) < 0.3:
+                    if genparts[i].genPartIdxMother >= 0 and (abs(genparts[genparts[i].genPartIdxMother].pdgId) == 11 or abs(genparts[genparts[i].genPartIdxMother].pdgId) == 13 or abs(genparts[genparts[i].genPartIdxMother].pdgId) == 15):
+                        photon_gen_matching += 8 #fsr photon
+                    else:
+                        photon_gen_matching += 4 #non-fsr photon
+
+        self.out.fillBranch("photon_gen_matching",photon_gen_matching)                
         self.out.fillBranch("photon_pt",photons[tight_photons[0]].pt)
         self.out.fillBranch("photon_eta",photons[tight_photons[0]].eta)
         self.out.fillBranch("mjj",(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).M())
@@ -392,19 +484,15 @@ class exampleProducer(Module):
         self.out.fillBranch("lumi",event.luminosityBlock)
         self.out.fillBranch("run",event.run)        
 
-        #print event.event
-
-
-        #self.out.fillBranch("EventMass",eventSum.M())
-        #if eventSum.M() < 2000:
-        #    return False
-        #else:
-        #    return True
+        if hasattr(event,'Generator_weight'):
+            self.out.fillBranch("gen_weight",event.Generator_weight)
+        else:
+            self.out.fillBranch("gen_weight",0)
 
         return True
 
 
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
 
-exampleModule = lambda : exampleProducer() 
+ewkzgjjModule = lambda : ewkzgjjProducer() 
 
