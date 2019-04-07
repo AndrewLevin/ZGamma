@@ -56,7 +56,7 @@ def draw_legend(x1,y1,hist,label,options):
 
 f_double_muon = ROOT.TFile("/afs/cern.ch/work/a/amlevin/data/ewkzgjj/2017/double_muon.root")
 f_double_eg = ROOT.TFile("/afs/cern.ch/work/a/amlevin/data/ewkzgjj/2017/double_eg.root")
-f_zgjets = ROOT.TFile(" /afs/cern.ch/work/a/amlevin/data/zg/2017/zgjets.root")
+f_zgjets = ROOT.TFile("/afs/cern.ch/work/a/amlevin/data/ewkzgjj/2017/zgjets.root")
 
 
 t_double_muon = f_double_muon.Get("Events")
@@ -104,26 +104,29 @@ def pass_json(run,lumi):
 
     return False    
 
-for i in range(0,t_double_muon.GetEntries()):
+for i in range(0,t_double_eg.GetEntries()):
 
-    t_double_muon.GetEntry(i)
+    t_double_eg.GetEntry(i)
 
-    if not pass_json(t_double_muon.run,t_double_muon.lumi):
+    if not pass_json(t_double_eg.run,t_double_eg.lumi):
         continue
 
-    if t_double_muon.lepton_pdg_id != 13:
+    if t_double_eg.lepton_pdg_id != 11:
         continue
 
-    if t_double_muon.photon_pt < 25:
+    if t_double_eg.photon_pt < 25:
         continue
 
-    if not (abs(t_double_muon.photon_eta) < 1.4442):
+    if t_double_eg.mjj > 400:
         continue
 
-    if t_double_muon.photon_selection == 2:
-        h_data_mll.Fill(t_double_muon.mll)
-    elif t_double_muon.photon_selection == 0 or t_double_muon.photon_selection == 1:    
-        h_fake_photon_mll.Fill(t_double_muon.mll,fake_photon_event_weight(t_double_muon.photon_eta, t_double_muon.photon_pt,t_double_muon.lepton_pdg_id ))
+    if not (abs(t_double_eg.photon_eta) < 1.4442):
+        continue
+
+    if t_double_eg.photon_selection == 2:
+        h_data_mll.Fill(t_double_eg.mll)
+    elif t_double_eg.photon_selection == 0 or t_double_eg.photon_selection == 1:    
+        h_fake_photon_mll.Fill(t_double_eg.mll,fake_photon_event_weight(t_double_eg.photon_eta, t_double_eg.photon_pt,t_double_eg.lepton_pdg_id ))
     else:
         assert(0)
 
@@ -134,10 +137,13 @@ for i in range(0,t_zgjets.GetEntries()):
     if t_zgjets.photon_pt < 25:
         continue
 
+    if t_zgjets.mjj > 400:
+        continue
+
     if not (abs(t_zgjets.photon_eta) < 1.4442):
         continue
 
-    if t_zgjets.lepton_pdg_id != 13:
+    if t_zgjets.lepton_pdg_id != 11:
         continue
 
     if t_zgjets.photon_selection != 2:

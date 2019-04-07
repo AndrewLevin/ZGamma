@@ -117,13 +117,16 @@ for i in range(0,t_double_muon.GetEntries()):
     if t_double_muon.photon_pt < 25:
         continue
 
+    if t_double_muon.mjj > 400:
+        continue
+
     if not (abs(t_double_muon.photon_eta) < 1.4442):
         continue
 
     if t_double_muon.photon_selection == 2:
-        h_data_mll.Fill(t_double_muon.mll)
+        h_data_mjj.Fill(t_double_muon.mjj)
     elif t_double_muon.photon_selection == 0 or t_double_muon.photon_selection == 1:    
-        h_fake_photon_mll.Fill(t_double_muon.mll,fake_photon_event_weight(t_double_muon.photon_eta, t_double_muon.photon_pt,t_double_muon.lepton_pdg_id ))
+        h_fake_photon_mjj.Fill(t_double_muon.mjj,fake_photon_event_weight(t_double_muon.photon_eta, t_double_muon.photon_pt,t_double_muon.lepton_pdg_id ))
     else:
         assert(0)
 
@@ -132,6 +135,9 @@ for i in range(0,t_zgjets.GetEntries()):
     t_zgjets.GetEntry(i)
 
     if t_zgjets.photon_pt < 25:
+        continue
+
+    if t_zgjets.mjj > 400:
         continue
 
     if not (abs(t_zgjets.photon_eta) < 1.4442):
@@ -146,54 +152,54 @@ for i in range(0,t_zgjets.GetEntries()):
 #    print str(t_zgjets.run) + " " + str(t_zgjets.lumi) + " " + str(t_zgjets.event)
 
     if t_zgjets.gen_weight > 0:
-        h_zgjets_mll.Fill(t_zgjets.mll,55.39*1000*35.9/zgjets_nweightedevents)
+        h_zgjets_mjj.Fill(t_zgjets.mjj,47.33*1000*35.9/zgjets_nweightedevents)
 
     else:    
-        h_zgjets_mll.Fill(t_zgjets.mll,-55.39*1000*35.9/zgjets_nweightedevents)
+        h_zgjets_mjj.Fill(t_zgjets.mjj,-47.33*1000*35.9/zgjets_nweightedevents)
 
 c = ROOT.TCanvas()
 
-h_zgjets_mll.SetLineColor(ROOT.kAzure-1)
-h_fake_photon_mll.SetLineColor(ROOT.kMagenta)
+h_zgjets_mjj.SetLineColor(ROOT.kAzure-1)
+h_fake_photon_mjj.SetLineColor(ROOT.kMagenta)
 
-h_zgjets_mll.SetFillColor(ROOT.kAzure-1)
-h_fake_photon_mll.SetFillColor(ROOT.kMagenta)
+h_zgjets_mjj.SetFillColor(ROOT.kAzure-1)
+h_fake_photon_mjj.SetFillColor(ROOT.kMagenta)
 
-h_zgjets_mll.SetFillStyle(1001)
-h_fake_photon_mll.SetFillStyle(1001)
+h_zgjets_mjj.SetFillStyle(1001)
+h_fake_photon_mjj.SetFillStyle(1001)
 
-h_sum_mll.Add(h_zgjets_mll)
-h_sum_mll.Add(h_fake_photon_mll)
+h_sum_mjj.Add(h_zgjets_mjj)
+h_sum_mjj.Add(h_fake_photon_mjj)
 
 h_stack = ROOT.THStack()
 
-h_stack.Add(h_zgjets_mll)
-h_stack.Add(h_fake_photon_mll)
+h_stack.Add(h_zgjets_mjj)
+h_stack.Add(h_fake_photon_mjj)
 
-h_data_mll.SetMinimum(0)
-h_data_mll.SetMarkerStyle(ROOT.kFullCircle)
-h_data_mll.SetLineWidth(3)
-h_data_mll.SetLineColor(ROOT.kBlack)
+h_data_mjj.SetMinimum(0)
+h_data_mjj.SetMarkerStyle(ROOT.kFullCircle)
+h_data_mjj.SetLineWidth(3)
+h_data_mjj.SetLineColor(ROOT.kBlack)
 
-set_axis_fonts(h_data_mll,"x","m_{ll} (GeV)")
-set_axis_fonts(h_data_mll,"y","Events / bin")
+set_axis_fonts(h_data_mjj,"x","m_{ll} (GeV)")
+set_axis_fonts(h_data_mjj,"y","Events / bin")
 
-h_data_mll.SetMaximum(1.05*max(h_data_mll.GetMaximum(),h_stack.GetMaximum()))
+h_data_mjj.SetMaximum(1.05*max(h_data_mjj.GetMaximum(),h_stack.GetMaximum()))
 
-h_data_mll.Draw()
+h_data_mjj.Draw()
 
-h_data_mll.Print("all")
+h_data_mjj.Print("all")
 
 h_stack.Draw("hist same")
 
-h_data_mll.Draw("same")
+h_data_mjj.Draw("same")
 
 j=0
-draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_data_mll,"data","lp")
+draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_data_mjj,"data","lp")
 j=j+1
-draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_fake_photon_mll,"fake photon","f")
+draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_fake_photon_mjj,"fake photon","f")
 j=j+1
-draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_zgjets_mll,"zg+jets","f")
+draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_zgjets_mjj,"zg+jets","f")
 
 s="35.9 fb^{-1} (13 TeV)"
 lumilabel = ROOT.TLatex (0.95, 0.93, s)
