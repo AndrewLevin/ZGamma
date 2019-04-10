@@ -79,12 +79,14 @@ for lepton_name in lepton_names:
             #    continue
 
             if photon1_eta_range == "abs(photon1_eta) < 1.4442":
-                sieie_cut = 0.01022
+#                sieie_cut = 0.01022
+                sieie_cut = 0.01015
                 n_bins = 128
                 sieie_lower = 0.00
                 sieie_upper = 0.04
             else:
-                sieie_cut = 0.03001
+#                sieie_cut = 0.03001
+                sieie_cut = 0.0272
                 #n_bins = 160
                 #n_bins = 80
                 n_bins = 40
