@@ -117,7 +117,7 @@ for i in range(0,t_double_muon.GetEntries()):
     if t_double_muon.photon_pt < 25:
         continue
 
-    if t_double_muon.mll > 400:
+    if t_double_muon.mjj > 400:
         continue
 
     if not (abs(t_double_muon.photon_eta) < 1.4442):
@@ -137,7 +137,7 @@ for i in range(0,t_zgjets.GetEntries()):
     if t_zgjets.photon_pt < 25:
         continue
 
-    if t_zgjets.mll > 400:
+    if t_zgjets.mjj > 400:
         continue
 
     if not (abs(t_zgjets.photon_eta) < 1.4442):
@@ -188,8 +188,6 @@ h_data_mll.SetMaximum(1.05*max(h_data_mll.GetMaximum(),h_stack.GetMaximum()))
 
 h_data_mll.Draw()
 
-h_data_mll.Print("all")
-
 h_stack.Draw("hist same")
 
 h_data_mll.Draw("same")
@@ -222,3 +220,4 @@ c.ForceUpdate()
 c.Modified()
 
 c.SaveAs("/eos/user/a/amlevin/www/tmp/delete_this.png")
+
