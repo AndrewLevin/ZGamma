@@ -104,29 +104,30 @@ def pass_json(run,lumi):
 
     return False    
 
-for i in range(0,t_double_eg.GetEntries()):
+for i in range(0,t_double_muon.GetEntries()):
 
-    t_double_eg.GetEntry(i)
+    t_double_muon.GetEntry(i)
 
-    if not pass_json(t_double_eg.run,t_double_eg.lumi):
+    if not pass_json(t_double_muon.run,t_double_muon.lumi):
         continue
 
-    if t_double_eg.lepton_pdg_id != 11:
+    if t_double_muon.lepton_pdg_id != 13:
         continue
 
-    if t_double_eg.photon_pt < 25:
+    if t_double_muon.photon_pt < 25:
         continue
 
-    if t_double_eg.mjj > 400:
+    if t_double_muon.mjj > 400:
         continue
 
-    if not (abs(t_double_eg.photon_eta) < 1.4442):
+    if not (abs(t_double_muon.photon_eta) < 1.4442):
         continue
 
-    if t_double_eg.photon_selection == 2:
-        h_data_mll.Fill(t_double_eg.mll)
-    elif t_double_eg.photon_selection == 0 or t_double_eg.photon_selection == 1:    
-        h_fake_photon_mll.Fill(t_double_eg.mll,fake_photon_event_weight(t_double_eg.photon_eta, t_double_eg.photon_pt,t_double_eg.lepton_pdg_id ))
+    if t_double_muon.photon_selection == 2:
+        h_data_mll.Fill(t_double_muon.mll)
+    elif t_double_muon.photon_selection == 0 or t_double_muon.photon_selection == 1:    
+#        print str(t_double_muon.run) + " " + str(t_double_muon.lumi) + " " + str(t_double_muon.event)
+        h_fake_photon_mll.Fill(t_double_muon.mll,fake_photon_event_weight(t_double_muon.photon_eta, t_double_muon.photon_pt,t_double_muon.lepton_pdg_id ))
     else:
         assert(0)
 
@@ -143,7 +144,7 @@ for i in range(0,t_zgjets.GetEntries()):
     if not (abs(t_zgjets.photon_eta) < 1.4442):
         continue
 
-    if t_zgjets.lepton_pdg_id != 11:
+    if t_zgjets.lepton_pdg_id != 13:
         continue
 
     if t_zgjets.photon_selection != 2:
