@@ -111,7 +111,7 @@ for i in range(0,t_double_muon.GetEntries()):
     if not pass_json(t_double_muon.run,t_double_muon.lumi):
         continue
 
-    if t_double_muon.lepton_pdg_id != 13:
+    if t_double_muon.lepton_pdg_id != 11:
         continue
 
     if t_double_muon.photon_pt < 25:
@@ -144,7 +144,7 @@ for i in range(0,t_zgjets.GetEntries()):
     if not (abs(t_zgjets.photon_eta) < 1.4442):
         continue
 
-    if t_zgjets.lepton_pdg_id != 13:
+    if t_zgjets.lepton_pdg_id != 11:
         continue
 
     if t_zgjets.photon_selection != 2:
@@ -154,9 +154,10 @@ for i in range(0,t_zgjets.GetEntries()):
 
     if t_zgjets.gen_weight > 0:
         h_zgjets_mll.Fill(t_zgjets.mll,55.39*1000*41.37/zgjets_nweightedevents)
-
+#        h_zgjets_mll.Fill(t_zgjets.mll,47.33*1000*41.37/zgjets_nweightedevents)
     else:    
         h_zgjets_mll.Fill(t_zgjets.mll,-55.39*1000*41.37/zgjets_nweightedevents)
+#        h_zgjets_mll.Fill(t_zgjets.mll,-47.33*1000*41.37/zgjets_nweightedevents)
 
 c = ROOT.TCanvas()
 
@@ -219,3 +220,4 @@ c.ForceUpdate()
 c.Modified()
 
 c.SaveAs("/eos/user/a/amlevin/www/tmp/delete_this.png")
+

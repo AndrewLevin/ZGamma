@@ -36,8 +36,6 @@ for i in range(fake_photon_event_weights_muon_endcap_hist.GetNbinsX()):
 for i in range(fake_photon_event_weights_electron_endcap_hist.GetNbinsX()):
     fake_photon_event_weights_electron_endcap_hist.SetBinContent(i+1,fake_photon_event_weights_electron_endcap[i])
 
-print fake_photon_event_weights_muon_barrel
-
 def fake_photon_event_weight(eta,pt,lepton_pdg_id,use_alt=False,stat_err_up = False):
 
     if abs(lepton_pdg_id) == 11:

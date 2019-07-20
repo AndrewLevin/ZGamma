@@ -197,7 +197,7 @@ draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_data_mll,"data","lp")
 j=j+1
 draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_fake_photon_mll,"fake photon","f")
 j=j+1
-draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_zgjets_mll,"zg+jets","f")
+draw_legend(xpositions[j],0.84 - ypositions[j]*yoffset,h_zgjets_mll ,"zg+jets","f")
 
 s="35.9 fb^{-1} (13 TeV)"
 lumilabel = ROOT.TLatex (0.95, 0.93, s)

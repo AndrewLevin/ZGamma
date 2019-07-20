@@ -24,6 +24,17 @@ class ewkzgjjProducer(Module):
         self.out.branch("event",  "l");
         self.out.branch("photon_pt",  "F");
         self.out.branch("photon_eta",  "F");
+        self.out.branch("photon_phi",  "F");
+        self.out.branch("lepton1_pt",  "F");
+        self.out.branch("lepton1_iso",  "F");
+        self.out.branch("lepton1_id",  "F");
+        self.out.branch("lepton1_eta",  "F");
+        self.out.branch("lepton1_phi",  "F");
+        self.out.branch("lepton2_pt",  "F");
+        self.out.branch("lepton2_eta",  "F");
+        self.out.branch("lepton2_phi",  "F");
+        self.out.branch("lepton2_iso",  "F");
+        self.out.branch("lepton2_id",  "F");
         self.out.branch("mjj",  "F");
         self.out.branch("detajj",  "F");
         self.out.branch("zep",  "F");
@@ -64,10 +75,8 @@ class ewkzgjjProducer(Module):
             if abs(muons[i].eta) > 2.4:
                 continue
 
-            if muons[i].tightId and muons[i].pfRelIso04_all < 0.15:
+            if muons[i].pfRelIso04_all < 0.4:
                 tight_muons.append(i)
-            elif muons[i].pfRelIso04_all < 0.25:
-                loose_but_not_tight_muons.append(i)
 
         for i in range (0,len(electrons)):
 
@@ -363,17 +372,17 @@ class ewkzgjjProducer(Module):
             if abs(muons[i2].eta) > 2.4:
                 return False
 
-            if muons[i1].pfRelIso04_all > 0.15:
-                return False
+#            if muons[i1].pfRelIso04_all > 0.15:
+#                return False
 
-            if muons[i2].pfRelIso04_all > 0.15:
-                return False
+#            if muons[i2].pfRelIso04_all > 0.15:
+#                return False
 
-            if not muons[i1].tightId:
-                return False
+#            if not muons[i1].tightId:
+#                return False
 
-            if not muons[i2].tightId:
-                return False
+#            if not muons[i2].tightId:
+#                return False
 
             if muons[i1].charge == muons[i2].charge:
                 return False
@@ -388,6 +397,16 @@ class ewkzgjjProducer(Module):
             self.out.fillBranch("mll",(muons[i1].p4() + muons[i2].p4()).M())
 
             self.out.fillBranch("lepton_pdg_id",13)
+            self.out.fillBranch("lepton1_pt",muons[i1].pt)
+            self.out.fillBranch("lepton1_eta",muons[i1].eta)
+            self.out.fillBranch("lepton1_phi",muons[i1].phi)
+            self.out.fillBranch("lepton1_iso",muons[i1].pfRelIso04_all)
+            self.out.fillBranch("lepton1_id",bool(muons[i1].tightId))
+            self.out.fillBranch("lepton2_pt",muons[i2].pt)
+            self.out.fillBranch("lepton2_eta",muons[i2].eta)
+            self.out.fillBranch("lepton2_phi",muons[i2].phi)
+            self.out.fillBranch("lepton2_iso",muons[i2].pfRelIso04_all)
+            self.out.fillBranch("lepton2_id",bool(muons[i2].tightId))
 
         elif len(tight_electrons) == 2:
 
@@ -423,6 +442,16 @@ class ewkzgjjProducer(Module):
                 return False
 
             self.out.fillBranch("lepton_pdg_id",11)
+            self.out.fillBranch("lepton1_pt",electrons[i1].pt)
+            self.out.fillBranch("lepton1_eta",electrons[i1].eta)
+            self.out.fillBranch("lepton1_phi",electrons[i1].phi)
+            self.out.fillBranch("lepton1_iso",0)
+            self.out.fillBranch("lepton1_id",0)
+            self.out.fillBranch("lepton2_pt",electrons[i2].pt)
+            self.out.fillBranch("lepton2_eta",electrons[i2].eta)
+            self.out.fillBranch("lepton2_phi",electrons[i2].phi)
+            self.out.fillBranch("lepton2_iso",0)
+            self.out.fillBranch("lepton2_id",0)
 
             self.out.fillBranch("zep",abs((electrons[i1].p4() + electrons[i2].p4() + photons[tight_photons[0]].p4()).Eta() - (jets[tight_jets[0]].eta + jets[tight_jets[1]].eta)/2))
 
@@ -477,6 +506,7 @@ class ewkzgjjProducer(Module):
         self.out.fillBranch("photon_gen_matching",photon_gen_matching)                
         self.out.fillBranch("photon_pt",photons[tight_photons[0]].pt)
         self.out.fillBranch("photon_eta",photons[tight_photons[0]].eta)
+        self.out.fillBranch("photon_phi",photons[tight_photons[0]].phi)
         self.out.fillBranch("mjj",(jets[tight_jets[0]].p4() + jets[tight_jets[1]].p4()).M())
 
         self.out.fillBranch("detajj",abs(jets[tight_jets[0]].eta - jets[tight_jets[1]].eta))
